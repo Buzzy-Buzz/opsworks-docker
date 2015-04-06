@@ -28,7 +28,12 @@ node[:deploy].each do |application, deploy|
             fi
         EOH
     end
-
+    bash "nginx-proxy-config" do
+        user "root"
+        code <<-EOH
+            docker run -d -p 80:80 -p 443:443 -v ~/dockerstuff/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro -v /var/run/docker.sock:/tmp/docker.sock jwilder/nginx-proxyy
+        EOH
+    end
     bash "nginx-proxy-run" do
         user "root"
         code <<-EOH
